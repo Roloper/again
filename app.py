@@ -1,24 +1,28 @@
-import serial
+#1
+#Explicacion de librerias
 from flask import Flask
 from flask import render_template
 from flask import Response
 import cv2
 import os
-from detector.entrenandoRF import train_face_recognizer
+from entrenandoRF import train_face_recognizer
 from flask import request
-import config
+from flask import redirect
 
+#2
+#Explicacion de parametros globales
 app = Flask(__name__)
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0)
 face_detector = cv2.CascadeClassifier(cv2.data.haarcascades +
      "haarcascade_frontalface_default.xml")
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 face_recognizer.read('modeloLBPHFace.xml')
-faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-ser = serial.Serial('COM2', 9600, timeout=1)
+#ser = serial.Serial('COM2', 9600, timeout=1)
 dataPath = './Data'
 imagePaths = os.listdir(dataPath)
-
+nom = ''
+#_-----------------------------------------
+#3
 def generate():
      while True:
           ret, frame = cap.read()
@@ -26,9 +30,6 @@ def generate():
                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                auxFrame = gray.copy()
                faces = face_detector.detectMultiScale(gray, 1.3, 5)
-               if len(faces) == 0:
-                    led_state = 'X'  # No se detectó ningún rostro, apagar ambos LEDs
-                    ser.write(led_state.encode())
                for (x, y, w, h) in faces:
                     rostro = auxFrame[y:y + h, x:x + w]
                     rostro = cv2.resize(rostro, (150, 150), interpolation=cv2.INTER_CUBIC)
@@ -48,15 +49,15 @@ def generate():
                yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
                     bytearray(encodedImage) + b'\r\n')
 
+#-------------------------------------------------------
+#4-----------------------------
 def register(personName):
+     print("inicio register")
      dataPath = './Data'
      personPath = dataPath + '/' + personName
      if not os.path.exists(personPath):
           print('Carpeta creada:', personPath)
           os.makedirs(personPath)
-
-     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
      faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
      count = 0
      while True:
@@ -80,12 +81,12 @@ def register(personName):
                if k == 27 or count >= 300:
                     break
      train_face_recognizer()
-     render_template("index.html")
 
+#-------------------------------------
+#----------------------------------------
 @app.route("/")
 def index():
      return render_template("index.html")
-
 
 @app.route("/registrar")
 def registrar():
@@ -93,17 +94,21 @@ def registrar():
 
 @app.route("/registro", methods=['GET', 'POST'])
 def registro():
+    global nom
     if request.method == 'POST':
-        nombre = request.form.get('nombre')
+        nom = request.form.get('nombre')
         # Hacer algo con el nombre recibido, como guardarlo en la base de datos o procesarlo
-        return Response(register(nombre),
-                        mimetype="multipart/x-mixed-replace; boundary=frame")
+        #return render_template("registro.html")
+        render_template("registro.html")
+        #return Response(register(nom),
+          #mimetype = "multipart/x-mixed-replace; boundary=frame")
     else:
         return render_template("registro.html")
 
 @app.route("/video_reg")
 def video_reg():
-     return Response(register(),
+     global nom
+     return Response(register(nom),
           mimetype = "multipart/x-mixed-replace; boundary=frame")
 
 @app.route("/video_feed")
@@ -112,5 +117,5 @@ def video_feed():
           mimetype = "multipart/x-mixed-replace; boundary=frame")
 
 if __name__ == "__main__":
-     app.run()
-cap.release()
+     app.run(debug=True)
+     cap.release()

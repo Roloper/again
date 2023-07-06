@@ -27,10 +27,6 @@
 <body>
      <div class="container">
           <h1>Mire la camara</h1>
-          <div class="button-container">
-               <input type="text" id="nombre" placeholder="Ingrese su nombre">
-               <button onclick="window.location.href = '{{ url_for('registro') }}';" class="btn btn-primary">Registro</button>
-          </div>
           <img src="{{ url_for('video_reg') }}" class="img-fluid">
      </div>
 

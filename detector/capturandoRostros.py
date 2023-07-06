@@ -1,7 +1,7 @@
 import cv2
 import os
 import imutils
-from detector.entrenandoRF import train_face_recognizer
+from entrenandoRF import train_face_recognizer
 
 def capture_face(personName):
     dataPath = './Data'

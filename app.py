@@ -26,6 +26,7 @@ nom = ''
 def generate():
      face_recognizer = cv2.face.LBPHFaceRecognizer_create()
      face_recognizer.read('modeloLBPHFace.xml')
+     imagePaths = os.listdir(dataPath)
      while True:
           ret, frame = cap.read()
           if ret:

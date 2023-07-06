@@ -45,6 +45,11 @@
           <a href="#" onclick="goBack();" class="btn btn-secondary">Volver</a>
      </div>
 
+     <div class="button-container text-center mt-4">
+               <button onclick="window.location.href = '{{ url_for('index') }}';" class="btn btn-primary">Inicio</button>
+          </div>
+
+
      <script>
           function goBack() {
                window.history.back();

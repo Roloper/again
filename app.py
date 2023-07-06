@@ -24,6 +24,8 @@ nom = ''
 #_-----------------------------------------
 #3
 def generate():
+     face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+     face_recognizer.read('modeloLBPHFace.xml')
      while True:
           ret, frame = cap.read()
           if ret:
@@ -99,7 +101,7 @@ def registro():
         nom = request.form.get('nombre')
         # Hacer algo con el nombre recibido, como guardarlo en la base de datos o procesarlo
         #return render_template("registro.html")
-        render_template("registro.html")
+        return render_template("registro.html")
         #return Response(register(nom),
           #mimetype = "multipart/x-mixed-replace; boundary=frame")
     else:

@@ -28,11 +28,28 @@
      <div class="container">
           <h1>Detector</h1>
           <img src="{{ url_for('video_feed') }}" class="img-fluid">
-          <div class="button-container">
-               <button onclick="window.location.href = '{{ url_for('registrar') }}';" class="btn btn-primary">Registro</button>
+          <p></p>
+          <div class="form-group">
+          <div id="myLabel" class="form-control" readonly></div>
           </div>
+     <button id="myButton" class="btn btn-primary" disabled>Botón</button>
+     <div class="button-container">
+               <button onclick="window.location.href = '{{ url_for('registrar') }}';" class="btn btn-primary">Registro</button>
      </div>
+     <script>
+     document.addEventListener("DOMContentLoaded", function() {
+          var label = document.getElementById("myLabel");
+          var button = document.getElementById("myButton");
 
+          // Asigna el contenido al label
+          label.innerText = "Contenido del Label";
+
+          // Habilita el botón si el label tiene contenido
+          button.disabled = label.innerText === "";
+     });
+</script>
+
+     </script>
      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
